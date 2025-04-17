@@ -1,0 +1,89 @@
+﻿@page "/events/create"
+@inject CreateEventService CreateEventService
+
+@if (!string.IsNullOrWhiteSpace(errorMessage))
+{
+    <div class="alert alert-danger" role="alert">
+        @errorMessage
+    </div>
+}
+
+<h3>Create Event</h3>
+<EditForm Model="_eventViewModel" OnValidSubmit="CreateEvent">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label for="Title" class="form-label">Title</label>
+        <InputText id="eventTitle" class="form-control" @bind-Value="_eventViewModel.Title" />
+        <ValidationMessage For="@(() => _eventViewModel.Title)" />
+    </div>
+
+    <div class="form-group">
+        <label for="Description" class="form-label">Description</label>
+        <InputText id="eventDescription" class="form-control" @bind-Value="_eventViewModel.Description" />
+        <ValidationMessage For="@(() => _eventViewModel.Description)" />
+    </div>
+
+    <div class="form-group">
+        <label for="eventStartDate" class="form-label">Start Date</label>
+        <InputDate id="eventStartDate" class="form-control" @bind-Value="_eventViewModel.BeginDate" />
+        <ValidationMessage For="@(() => _eventViewModel.BeginDate)" />
+    </div>
+
+    <div class="form-group">
+        <label for="eventStartTime" class="form-label">Start Time</label>
+        <input type="time" id="eventStartTime" class="form-control" @bind-value="_eventViewModel.BeginTime" />
+        <ValidationMessage For="@(() => _eventViewModel.BeginTime)" />
+    </div>
+
+    <div class="form-group">
+        <label for="eventEndDate" class="form-label">End Date</label>
+        <InputDate id="eventStartDate" class="form-control" @bind-Value="_eventViewModel.EndDate" />
+        <ValidationMessage For="@(() => _eventViewModel.EndDate)" />
+    </div>
+
+    <div class="form-group">
+        <label for="eventEndTime" class="form-label">End Time</label>
+        <input type="time" id="eventEndTime" class="form-control" @bind-value="_eventViewModel.EndTime" />
+        <ValidationMessage For="@(() => _eventViewModel.EndTime)" />
+    </div>
+
+    <div class="form-group">
+        <label for="eventCategory" class="form-label">Category</label>
+        <InputText id="eventCategory" class="form-control" @bind-value="_eventViewModel.Category" />
+        <ValidationMessage For="@(() => _eventViewModel.Category)" />
+    </div>
+
+    <div class="form-group">
+        <label for="eventCapacity" class="form-label">Capacity</label>
+        <input  id="eventCapacity" class="form-control" @bind-value="_eventViewModel.Capacity" />
+        <ValidationMessage For="@(() => _eventViewModel.Capacity)" />
+    </div>
+
+    <div class="form-group">
+        <label for="eventLocation" class="form-label">Location</label>
+        <InputText id="eventLocation" class="form-control" @bind-value="_eventViewModel.Location" />
+        <ValidationMessage For="@(() => _eventViewModel.Location)" />
+    </div>
+    <br />
+    <button type="submit" class="btn btn-primary">Create Event</button>
+    &nbsp;
+    <NavLink class="btn btn-secondary" href="/events">Cancel</NavLink>
+</EditForm>
+@code {
+    private EventViewModel _eventViewModel = new EventViewModel();
+    private string? errorMessage = string.Empty;
+    
+    private void CreateEvent()
+    {
+        errorMessage = CreateEventService.ValidateEvent(_eventViewModel);
+
+       // Save the event to the database
+    // await _eventService.CreateEventAsync(_eventViewModel);
+    }
+
+    
+}
