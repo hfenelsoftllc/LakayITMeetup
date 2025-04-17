@@ -1,10 +1,42 @@
-﻿namespace LakayITMeetup.WebApp.Features.Events.CreatedEvent
+﻿using LakayITMeetup.WebApp.Data.Entities;
+using Microsoft.EntityFrameworkCore;
+
+namespace LakayITMeetup.WebApp.Features.Events.CreatedEvent
 {
     public class CreateEventService
     {
-        public CreateEventService()
+        private readonly IDbContextFactory<ApplicationDbContext> _dbContextFactory;
+
+        public CreateEventService(IDbContextFactory<ApplicationDbContext> dbContextFactory)
         {
-            
+            this._dbContextFactory = dbContextFactory;
+        }
+
+        public async Task CreateEventAsync(EventViewModel eventViewModel)
+        {
+            if (eventViewModel == null)
+            {
+                throw new ArgumentNullException(nameof(eventViewModel));
+            }
+
+            using (var context = _dbContextFactory.CreateDbContext())
+            {
+                var newEvent = new Event
+                {
+                    Title = eventViewModel.Title ?? string.Empty, // Ensure non-null value
+                    BeginDate = eventViewModel.BeginDate,
+                    BeginTime = eventViewModel.BeginTime,
+                    EndDate = eventViewModel.EndDate,
+                    EndTime = eventViewModel.EndTime,
+                    Description = eventViewModel.Description ?? string.Empty, // Ensure non-null value
+                    Location = eventViewModel.Location ?? string.Empty, // Ensure non-null value
+                    MeetupLink = eventViewModel.MeetupLink ?? string.Empty, // Ensure non-null value
+                    Category = eventViewModel.Category ?? string.Empty, // Ensure non-null value
+                    Capacity = eventViewModel.Capacity
+                };
+                context.Events.Add(newEvent);
+                await context.SaveChangesAsync();
+            }
         }
 
         public string? ValidateEvent(EventViewModel eventViewModel) 
@@ -14,6 +46,7 @@
                 return "Event cannot be null";
             }
             string? errorMessage = eventViewModel.ValidateDates();
+
             if (!string.IsNullOrEmpty(errorMessage))
             {
                 return errorMessage;

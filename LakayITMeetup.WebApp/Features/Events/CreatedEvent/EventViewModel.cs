@@ -26,7 +26,7 @@ namespace LakayITMeetup.WebApp.Features.Events.CreatedEvent
 
         public string? Location { get; set; }
 
-        public string MeetupLink { get; set; }
+        public string? MeetupLink { get; set; }
 
         [Required]
         public string Category { get; set; }

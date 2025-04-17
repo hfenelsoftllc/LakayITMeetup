@@ -1,10 +1,18 @@
+using LakayITMeetup.WebApp.Data.Entities;
 using LakayITMeetup.WebApp.Features;
 using LakayITMeetup.WebApp.Features.Events.CreatedEvent;
 using LakayITMeetup.WebApp.Shared;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddTransient<CreateEventService>();
+
+// Configure DbContext for SQLServer
+builder.Services.AddDbContextFactory<ApplicationDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+//builder.Services.AddSingleton<ApplicationDbContext>();
 
 // Add services to the container.
 builder.Services.AddRazorComponents()

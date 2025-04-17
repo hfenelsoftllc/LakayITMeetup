@@ -9,7 +9,7 @@
 }
 
 <h3>Create Event</h3>
-<EditForm Model="_eventViewModel" OnValidSubmit="CreateEvent">
+<EditForm Model="_eventViewModel" OnValidSubmit="CreateEventAsync">
     <DataAnnotationsValidator />
     <ValidationSummary />
     <DataAnnotationsValidator />
@@ -77,12 +77,15 @@
     private EventViewModel _eventViewModel = new EventViewModel();
     private string? errorMessage = string.Empty;
     
-    private void CreateEvent()
+    private async Task CreateEventAsync()
     {
         errorMessage = CreateEventService.ValidateEvent(_eventViewModel);
-
+        if (!string.IsNullOrWhiteSpace(errorMessage))
+        {
+            return;
+        }
        // Save the event to the database
-    // await _eventService.CreateEventAsync(_eventViewModel);
+        await CreateEventService.CreateEventAsync(_eventViewModel);
     }
 
     
