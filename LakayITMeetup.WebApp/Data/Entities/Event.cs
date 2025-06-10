@@ -27,10 +27,10 @@ namespace LakayITMeetup.WebApp.Data.Entities
 
         public string? Location { get; set; }
 
-        public string MeetupLink { get; set; }
+        public required string MeetupLink { get; set; }
 
         [Required]
-        public string Category { get; set; }
+        public required string Category { get; set; }
 
         [Range(1, int.MaxValue)]
         public int Capacity { get; set; }

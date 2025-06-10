@@ -1,16 +1,14 @@
-﻿using LakayITMeetup.WebApp.Data.Entities;
+﻿using AutoMapper;
+using LakayITMeetup.WebApp.Data.Entities;
+using LakayITMeetup.WebApp.Shared.ViewModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace LakayITMeetup.WebApp.Features.Events.CreatedEvent
 {
-    public class CreateEventService
+    public class CreateEventService(IDbContextFactory<ApplicationDbContext> dbContextFactory, IMapper mapper)
     {
-        private readonly IDbContextFactory<ApplicationDbContext> _dbContextFactory;
-
-        public CreateEventService(IDbContextFactory<ApplicationDbContext> dbContextFactory)
-        {
-            this._dbContextFactory = dbContextFactory;
-        }
+        private readonly IDbContextFactory<ApplicationDbContext> _dbContextFactory = dbContextFactory;
+        private readonly IMapper _mapper = mapper;
 
         public async Task CreateEventAsync(EventViewModel eventViewModel)
         {
@@ -19,24 +17,27 @@ namespace LakayITMeetup.WebApp.Features.Events.CreatedEvent
                 throw new ArgumentNullException(nameof(eventViewModel));
             }
 
-            using (var context = _dbContextFactory.CreateDbContext())
-            {
-                var newEvent = new Event
-                {
-                    Title = eventViewModel.Title ?? string.Empty, // Ensure non-null value
-                    BeginDate = eventViewModel.BeginDate,
-                    BeginTime = eventViewModel.BeginTime,
-                    EndDate = eventViewModel.EndDate,
-                    EndTime = eventViewModel.EndTime,
-                    Description = eventViewModel.Description ?? string.Empty, // Ensure non-null value
-                    Location = eventViewModel.Location ?? string.Empty, // Ensure non-null value
-                    MeetupLink = eventViewModel.MeetupLink ?? string.Empty, // Ensure non-null value
-                    Category = eventViewModel.Category ?? string.Empty, // Ensure non-null value
-                    Capacity = eventViewModel.Capacity
-                };
-                context.Events.Add(newEvent);
-                await context.SaveChangesAsync();
-            }
+            using var context = _dbContextFactory.CreateDbContext();
+            // Validate the eventViewModel with automapper
+            var eventEntity = _mapper.Map<Event>(eventViewModel);
+
+            //var newEvent = new Event
+            //{
+            //    Title = eventViewModel.Title ?? string.Empty, // Ensure non-null value
+            //    BeginDate = eventViewModel.BeginDate,
+            //    BeginTime = eventViewModel.BeginTime,
+            //    EndDate = eventViewModel.EndDate,
+            //    EndTime = eventViewModel.EndTime,
+            //    Description = eventViewModel.Description ?? string.Empty, // Ensure non-null value
+            //    Location = eventViewModel.Location ?? string.Empty, // Ensure non-null value
+            //    MeetupLink = eventViewModel.MeetupLink ?? string.Empty, // Ensure non-null value
+            //    Category = eventViewModel.Category ?? string.Empty, // Ensure non-null value
+            //    Capacity = eventViewModel.Capacity
+            //};
+            //context.Events.Add(newEvent);
+
+            context.Events.Add(eventEntity);
+            await context.SaveChangesAsync();
         }
 
         public string? ValidateEvent(EventViewModel eventViewModel) 

@@ -1,6 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using LakayITMeetup.WebApp.Features.Events.CreatedEvent;
+using System.ComponentModel.DataAnnotations;
 
-namespace LakayITMeetup.WebApp.Features.Events.CreatedEvent
+namespace LakayITMeetup.WebApp.Shared.ViewModels
 {
     public class EventViewModel
     {

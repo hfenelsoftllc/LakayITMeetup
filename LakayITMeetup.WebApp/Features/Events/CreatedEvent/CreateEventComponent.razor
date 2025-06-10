@@ -1,4 +1,6 @@
 ﻿@page "/events/create"
+@using LakayITMeetup.WebApp.Shared.ViewModels
+@inject NavigationManager NavigationManager
 @inject CreateEventService CreateEventService
 
 @if (!string.IsNullOrWhiteSpace(errorMessage))
@@ -71,10 +73,11 @@
     <br />
     <button type="submit" class="btn btn-primary">Create Event</button>
     &nbsp;
-    <NavLink class="btn btn-secondary" href="/events">Cancel</NavLink>
+    <NavLink class="btn btn-secondary" href="/">Cancel</NavLink>
 </EditForm>
 @code {
     private EventViewModel _eventViewModel = new EventViewModel();
+
     private string? errorMessage = string.Empty;
     
     private async Task CreateEventAsync()
@@ -86,6 +89,9 @@
         }
        // Save the event to the database
         await CreateEventService.CreateEventAsync(_eventViewModel);
+        // Redirect to the event list page
+        NavigationManager.NavigateTo("/");
+
     }
 
     

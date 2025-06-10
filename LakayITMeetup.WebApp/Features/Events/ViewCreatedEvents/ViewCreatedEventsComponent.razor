@@ -1,6 +1,61 @@
 ﻿@page "/"
-<h3>ViewCreatedEventsComponent</h3>
+@using LakayITMeetup.WebApp.Features.Events.CreatedEvent
+@using LakayITMeetup.WebApp.Shared.ViewModels
+
+@inject ViewCreatedEventsService ViewCreatedEventsService
+
+<h3>Created Events</h3>
+
 <a href="/events/create" class="btn btn-primary">Create Event</a>
+
+@if (_createdEvents == null)
+{
+    <p>Loading...</p>
+}
+else if (_createdEvents.Count == 0)
+{
+    <p>No events found.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <tbody>
+            @foreach (var eventItem in _createdEvents)
+            {
+                <tr>
+                    <td>@eventItem.Title</td>
+                    <td><strong>Start Date:</strong> @eventItem.BeginDate.ToString("d") @eventItem.BeginTime.ToString("t")</td>
+                    <td><strong>End Date:</strong> @eventItem.EndDate.ToString("d") @eventItem.EndTime.ToString("t")</td>
+                    <td>
+
+                       @*  if capacity is zero, then display "Unlimited", otherwie display the actual capacity *@                       
+
+                        @if (eventItem.Capacity > 0)
+                        {
+                            <p><strong>Capacity:</strong> @eventItem.Capacity</p>
+                        }
+                        else
+                        {
+                            <p><strong>Capacity:</strong> Unlimited</p>
+                        }
+
+                    </td>
+                </tr>
+                
+            }
+        </tbody>
+        
+    </table>
+}
 @code {
 
+    private List<EventViewModel> _createdEvents = new List<EventViewModel>();
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _createdEvents = await ViewCreatedEventsService.GetCreatedEventsAsync();
+            StateHasChanged();
+        }
+    }
 }

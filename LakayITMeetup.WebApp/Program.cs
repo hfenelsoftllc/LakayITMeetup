@@ -1,12 +1,17 @@
 using LakayITMeetup.WebApp.Data.Entities;
 using LakayITMeetup.WebApp.Features;
 using LakayITMeetup.WebApp.Features.Events.CreatedEvent;
+using LakayITMeetup.WebApp.Features.Events.ViewCreatedEvents;
 using LakayITMeetup.WebApp.Shared;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddTransient<CreateEventService>();
+builder.Services.AddTransient<ViewCreatedEventsService>();
+
+// Add AutoMapper
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 // Configure DbContext for SQLServer
 builder.Services.AddDbContextFactory<ApplicationDbContext>(options =>
